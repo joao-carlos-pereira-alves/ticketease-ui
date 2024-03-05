@@ -1,13 +1,23 @@
 import { createWebHistory, createRouter } from "vue-router";
 // import store from "../store";
 
-import Dashboard from "../views/Dashboard/Index.vue";
+import Login from "../views/Login/LoginView.vue";
+import Dashboard from "../views/Dashboard/DashboardView.vue";
 
 import App from "../main.js"
 
 const routes = [
   {
     path: "/",
+    name: "Login",
+    component: Login,
+    meta: {
+      hideMenu: true,
+      skipAuthentication: true
+    }
+  },
+  {
+    path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
     meta: {

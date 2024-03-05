@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh LpR lFf" class="bg-white">
+  <q-layout view="lHh LpR lFf" class="$primary">
     <q-header v-if="!hideMenu" elevated>
       <NavBar v-if="!hideMenu" />
     </q-header>
@@ -23,7 +23,7 @@ export default {
     Footer,
   },
   beforeDestroy() {
-    this.$authentication.logout()
+    // this.$authentication.logout()
   },
   computed: {
     hideMenu() {

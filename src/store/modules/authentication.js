@@ -35,21 +35,21 @@ export const authentication = defineStore("authentication", {
           timeout: 1000,
         });
 
-
         router.push({ name: "Dashboard" });
       } catch (error) {
-        console.log(error)
         App._context.config.globalProperties.$q.notify({
           message: "Login ou senha inválidos",
           type: "warning",
           position: "top-right",
           timeout: 1000,
         });
+
         return error;
       }
     },
     async logout() {
       this.currentUser = {};
+
       localStorage.removeItem("currentUser");
 
       router.push({ name: "Login" });
