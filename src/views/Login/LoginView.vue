@@ -24,17 +24,28 @@
         </q-card-section>
 
         <q-card-section>
-          <q-form class="q-gutter-md">
+          <q-form class="q-gutter-md" @submit="onSubmit" @reset="onReset">
             <div>
-              <q-input outlined v-model="text" label="E-mail" />
+              <q-input
+                outlined
+                label="E-mail"
+                :rules="[rules.required, rules.email]"
+                v-model="loginForm.email"
+              />
             </div>
             <div>
-              <q-input outlined v-model="text" label="Senha" class="" />
+              <q-input
+                outlined
+                label="Senha"
+                class=""
+                :rules="[rules.required]"
+                v-model="loginForm.password"
+              />
             </div>
             <div class="row items-center">
               <div class="col-6 text-left">
                 <q-checkbox
-                  v-model="keepLoggedUser"
+                  v-model="loginForm.rememberMe"
                   label="Mantenha-me conectado"
                   class="text-primary"
                 />
@@ -42,17 +53,18 @@
               <div class="col-6 text-right">
                 <a>Esqueceu a senha?</a>
               </div>
+              <div class="col-12 q-mt-lg">
+                <q-btn
+                  unelevated
+                  rounded
+                  color="primary"
+                  label="Entrar"
+                  class="full-width"
+                  type="submit"
+                />
+              </div>
             </div>
           </q-form>
-        </q-card-section>
-        <q-card-section>
-          <q-btn
-            unelevated
-            rounded
-            color="primary"
-            label="Entrar"
-            class="full-width"
-          />
         </q-card-section>
       </q-card>
     </div>
@@ -60,14 +72,38 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, ref } from "vue";
+import { ref } from "vue";
+import { authentication } from "../../store/modules/authentication";
 
-const keepLoggedUser = ref(false);
+const useAuthentication = authentication();
+const loginForm = ref({
+  email: null,
+  password: null,
+  rememberMe: false
+});
+const rules = ref({
+  required: (v) => !!v || "Campo obrigatório",
+  email: (v) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(v) || "E-mail inválido";
+  }
+});
+
+const onReset = () => {
+  loginForm.value = {
+    email: null,
+    password: null,
+  };
+};
+
+const onSubmit = () => useAuthentication.sign_in(loginForm.value)
 </script>
 
 <style scoped>
+
 .login-card {
   min-height: 400px;
   width: min(85vw, 50vw);
 }
+
 </style>

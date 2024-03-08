@@ -20,12 +20,12 @@ export const authentication = defineStore("authentication", {
     },
   },
   actions: {
-    async login(user) {
+    async sign_in(user) {
       try {
-        const response = await axios.post("/login", { user: user });
+        await axios.post("/sign_in", user);
 
-        this.currentUser = response.data;
-        localStorage.currentUser = JSON.stringify(this.currentUser);
+        // this.currentUser = response.data;
+        // localStorage.currentUser = JSON.stringify(this.currentUser);
 
         /* It's calling the `notify` method from the `Quasar` framework. */
         App._context.config.globalProperties.$q.notify({

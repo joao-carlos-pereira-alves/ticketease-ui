@@ -2,6 +2,7 @@
   "name": "HelpDesk",
   "private": true,
   "version": "0.1.0",
+  "proxy": "http://localhost:4000",
   "type": "module",
   "scripts": {
     "dev": "vite",

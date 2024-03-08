@@ -6,13 +6,13 @@ import axios from "axios";
 import { authentication } from "../store/modules/authentication";
 import router from "../router";
 
-export const API_URL = "http://localhost:3000" || "backend port";
+export const API_URL = "http://localhost:4000" || "backend port";
 
 import App from "../main.js";
 
 const addAuthorizationToken = (data, headers) => {
   const useAuthentication = authentication();
-  const currentUser = useAuthentication.currentUser;
+  const currentUser       = useAuthentication.currentUser;
 
   if (currentUser && currentUser.token) {
     headers.Authorization = `Bearer ${currentUser.token}`;
@@ -25,11 +25,11 @@ const addAuthorizationToken = (data, headers) => {
 
 const config = {
   baseURL: `${API_URL}/api/v1`,
-  withCredentials: false,
+  withCredentials: true,
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   },
-  transformRequest: addAuthorizationToken,
+  // transformRequest: addAuthorizationToken,
 };
 
 const _axios = axios.create(config);
@@ -38,7 +38,7 @@ _axios.interceptors.request.use(
   (config) => {
     if (App._context.config.globalProperties.$authentication.isJwtExpired) {
       localStorage.removeItem("currentUser");
-      config.headers.Authorization = "";
+      delete config.headers.Authorization;
     }
     return config;
   },
