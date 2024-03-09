@@ -3,8 +3,8 @@ import { createWebHistory, createRouter } from "vue-router";
 
 import Login from "../views/Login/LoginView.vue";
 import Dashboard from "../views/Dashboard/DashboardView.vue";
-
 import App from "../main.js"
+import { authentication } from "../store/modules/authentication.js";
 
 const routes = [
   {
@@ -21,7 +21,7 @@ const routes = [
     name: "Dashboard",
     component: Dashboard,
     meta: {
-      skipAuthentication: true,
+      skipAuthentication: false,
     }
   },
 ];
@@ -33,10 +33,12 @@ const router = createRouter({
 
 // Global before guard to redirect user to the login page when authentication is needed
 router.beforeResolve((to, _from, next) => {
+  const useAuthentication = authentication();
+
   if (to.meta && to.meta.skipAuthentication) {
     next();
   }
-  else if (App._context.config.globalProperties.$authentication.isJwtExpired) {
+  else if (!useAuthentication?._auth) {
     next({ name: "Login" });
   }
   else {

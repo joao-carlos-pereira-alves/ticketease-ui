@@ -2,7 +2,6 @@
   "name": "HelpDesk",
   "private": true,
   "version": "0.1.0",
-  "proxy": "http://localhost:4000",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +10,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.15.0",
-    "axios": "^0.26.1",
+    "axios": "^1.6.7",
     "jwt-decode": "^3.1.2",
     "pinia": "^2.0.17",
     "quasar": "^2.7.5",

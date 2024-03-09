@@ -7,50 +7,37 @@ import App from "../../main.js"
 
 export const authentication = defineStore("authentication", {
   state: () => ({
-    currentUser: JSON.parse(localStorage.currentUser || "{}"),
+    _auth: localStorage?._auth || null
   }),
   getters: {
     jwtPayload() {
-      if (!(this.currentUser && this.currentUser.token)) return {};
+      if (!this._auth) return {};
 
-      return jwtDecode(this.currentUser.token);
+      return jwtDecode(this._auth);
     },
     isJwtExpired(_state) {
       return Date.now() >= (this.jwtPayload.exp || 0) * 1000;
-    },
+    }
   },
   actions: {
-    async sign_in(user) {
+    async signIn(user) {
       try {
-        await axios.post("/sign_in", user);
+        const response = await axios.post("/sign_in", user);
 
-        // this.currentUser = response.data;
-        // localStorage.currentUser = JSON.stringify(this.currentUser);
-
-        /* It's calling the `notify` method from the `Quasar` framework. */
-        App._context.config.globalProperties.$q.notify({
-          message: "Login realizado com sucesso",
-          type: "positive",
-          position: "top-right",
-          timeout: 1000,
-        });
+        if (response?.data?.token) {
+          this._auth = response.data.token
+          localStorage._auth = this._auth;
+        }
 
         router.push({ name: "Dashboard" });
       } catch (error) {
-        App._context.config.globalProperties.$q.notify({
-          message: "Login ou senha inválidos",
-          type: "warning",
-          position: "top-right",
-          timeout: 1000,
-        });
-
-        return error;
+        return error?.response || null;
       }
     },
     async logout() {
-      this.currentUser = {};
+      this._auth = null;
 
-      localStorage.removeItem("currentUser");
+      localStorage.removeItem("_auth");
 
       router.push({ name: "Login" });
     },

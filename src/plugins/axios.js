@@ -12,10 +12,10 @@ import App from "../main.js";
 
 const addAuthorizationToken = (data, headers) => {
   const useAuthentication = authentication();
-  const currentUser       = useAuthentication.currentUser;
+  const _auth = useAuthentication._auth;
 
-  if (currentUser && currentUser.token) {
-    headers.Authorization = `Bearer ${currentUser.token}`;
+  if (_auth && _auth.token) {
+    headers.Authorization = `Bearer ${_auth.token}`;
   }
 
   if (data instanceof FormData) return data;
@@ -27,20 +27,37 @@ const config = {
   baseURL: `${API_URL}/api/v1`,
   withCredentials: true,
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   },
-  // transformRequest: addAuthorizationToken,
+  transformRequest: addAuthorizationToken,
 };
 
 const _axios = axios.create(config);
 
+let pendingRequest = null;
+
+const debounceInterceptor = (config) => {
+  if (pendingRequest) {
+    clearTimeout(pendingRequest);
+  }
+
+  return new Promise((resolve) => {
+    pendingRequest = setTimeout(() => {
+      resolve(config);
+    }, 200);
+  });
+};
+
 _axios.interceptors.request.use(
-  (config) => {
-    if (App._context.config.globalProperties.$authentication.isJwtExpired) {
-      localStorage.removeItem("currentUser");
+  async (config) => {
+    const useAuthentication = authentication();
+    const _auth = useAuthentication._auth;
+
+    if (!_auth) {
+      useAuthentication.logout()
       delete config.headers.Authorization;
     }
-    return config;
+    return debounceInterceptor(config);
   },
   (error) => {
     return Promise.reject(error);
@@ -54,23 +71,17 @@ _axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.warn("Api request error\n", error);
-    // switch (error.response.status) {
-    //     case 401:
-    //         store.dispatch("authentication/logout");
-    //         router.replace({
-    //             path: "/",
-    //             query: { redirect: router.currentRoute.fullPath },
-    //         });
-    //         break;
-    //     case 403:
-    //         store.dispatch("authentication/logout");
-    //         router.replace({
-    //             path: "/",
-    //             query: { redirect: router.currentRoute.fullPath },
-    //         });
-    //         break;
-    // }
+    const useAuthentication = authentication();
+
+    switch (error.response.status) {
+      case 401:
+        useAuthentication.logout()
+        break;
+      default:
+        router.replace({
+          path: "/",
+        });
+    }
     return Promise.reject(error);
   }
 );
