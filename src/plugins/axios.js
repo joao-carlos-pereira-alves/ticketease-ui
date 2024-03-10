@@ -34,19 +34,19 @@ const config = {
 
 const _axios = axios.create(config);
 
-let pendingRequest = null;
+// let pendingRequest = null;
 
-const debounceInterceptor = (config) => {
-  if (pendingRequest) {
-    clearTimeout(pendingRequest);
-  }
+// const debounceInterceptor = (config) => {
+//   if (pendingRequest) {
+//     clearTimeout(pendingRequest);
+//   }
 
-  return new Promise((resolve) => {
-    pendingRequest = setTimeout(() => {
-      resolve(config);
-    }, 200);
-  });
-};
+//   return new Promise((resolve) => {
+//     pendingRequest = setTimeout(() => {
+//       resolve(config);
+//     }, 0);
+//   });
+// };
 
 _axios.interceptors.request.use(
   async (config) => {
@@ -57,7 +57,8 @@ _axios.interceptors.request.use(
       useAuthentication.signOut()
       delete config.headers.Authorization;
     }
-    return debounceInterceptor(config);
+    
+    return config;
   },
   (error) => {
     return Promise.reject(error);

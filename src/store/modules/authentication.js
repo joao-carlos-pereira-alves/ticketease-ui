@@ -10,10 +10,10 @@ export const authentication = defineStore("authentication", {
   state: () => ({
     _auth: localStorage?._auth || null,
     user: null,
-    loading: true
+    loading: false
   }),
   getters: {
-    checkAndFetchUser() {
+    async checkAndFetchUser() {
       if (this.user) return;
 
       this.updateLoadingState(true);
@@ -52,7 +52,7 @@ export const authentication = defineStore("authentication", {
       this.loading = v;
     },
     async setCurrentUser() {
-      this.user   = await fetchCurrentUser();
+      this.user = await fetchCurrentUser();
       this.updateLoadingState(false)
     }
   },

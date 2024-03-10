@@ -20,8 +20,8 @@ export default {
     Footer,
     Drawer
   },
-  beforeMount() {
-    this.$authentication.checkAndFetchUser
+  beforeCreate() {
+    this.$authentication.checkAndFetchUser;
   },
   computed: {
     hideMenu() {

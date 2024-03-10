@@ -36,27 +36,37 @@
                 </q-item-section>
               </q-item>
             </template>
-            <q-item
-              clickable
-              v-ripple
-              @click="$authentication.signOut"
-              class="q-mt-sm"
-              style="border-radius: 10px"
-            >
-              <q-item-section avatar>
-                <q-icon name="logout" />
-              </q-item-section>
-              <q-item-section> Sair </q-item-section>
-            </q-item>
           </q-list>
         </q-card-section>
+        <q-card-section v-show="!$q.screen.xs">
+          <q-img
+            :src="ilustrationImage"
+            spinner-color="primary"
+            loading="lazy"
+          />
+        </q-card-section>
       </q-card>
+    </div>
+    <div class="col-12 row items-end q-pa-md">
+      <q-item
+        clickable
+        v-ripple
+        @click="$authentication.signOut"
+        class="q-mt-sm full-width"
+        style="border-radius: 10px"
+      >
+        <q-item-section avatar>
+          <q-icon name="logout" />
+        </q-item-section>
+        <q-item-section> Sair </q-item-section>
+      </q-item>
     </div>
   </q-drawer>
 </template>
 
 <script>
 import { ref } from "vue";
+import dashboardIlustration from "../../assets/dashboard-ilustration.jpeg";
 
 const menuList = [
   {
@@ -75,9 +85,12 @@ const menuList = [
 
 export default {
   setup() {
+    const ilustrationImage = dashboardIlustration;
+
     return {
       drawer: ref(true),
       menuList,
+      ilustrationImage,
     };
   },
 };

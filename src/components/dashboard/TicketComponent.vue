@@ -26,42 +26,118 @@
       </div>
     </div>
     <div class="col-12">
-      <q-card v-for="i in 4" style="border-radius: 15px">
+      <q-card v-for="ticket in $ticket.tickets" style="border-radius: 15px">
         <q-card-section class="row q-mb-md">
-          <div class="col-2 col-sm-1 icon-card rounded-borders row items-center justify-center">
+          <div
+            class="col-2 col-sm-1 icon-card rounded-borders row items-center justify-center"
+          >
             <q-icon size="lg" name="bug_report" />
           </div>
           <div
             class="col text-subtitle2 text-weight-bold text-left q-px-md row"
           >
             <div class="col-12">
-              <span class=""> Meu primeiro chamado! </span>
+              <span class=""> {{ ticket.subject }} </span>
               <span v-if="!$q.screen.xs">
                 <q-chip
-                  v-for="i in 2"
-                  clickable
-                  style="background-color: var(--primary-blur)"
-                  text-color="black"
+                  v-for="tag in ticket.tags"
+                  :style="`background-color: ${
+                    $getTagColor(tag).backgroundColor
+                  };`"
                   size="md"
                   class="rounded-borders q-mx-sm"
                 >
-                  <div class="text-primary">Design</div>
+                  <div :style="`color: ${$getTagColor(tag).textColor}`">
+                    {{ $capitalize(translateTag(tag).label) }}
+                  </div>
                 </q-chip>
               </span>
             </div>
             <div class="col-12 text-grey">
-              <small>Uma descrição</small>
+              <small>
+                {{ $truncateString(ticket.description, 50) }}
+              </small>
             </div>
           </div>
           <q-space></q-space>
           <div class="col text-right">
-            <small class="text-caption">2 days ago</small>
+            <small class="text-caption">
+              {{ formatTimeAgo(ticket.created_at) }}
+            </small>
           </div>
         </q-card-section>
       </q-card>
     </div>
   </div>
 </template>
+
+<script>
+import TimeAgo from "javascript-time-ago";
+import pt from "javascript-time-ago/locale/pt";
+
+TimeAgo.addDefaultLocale(pt);
+
+export default {
+  beforeCreate() {
+    this.$ticket.getTickets();
+  },
+  methods: {
+    translateTag(tag) {
+      const tags = [
+        { key: "urgent", label: "urgente", color: "#FF5733" },
+        { key: "critical", label: "crítico", color: "#FF3333" },
+        { key: "deadline", label: "prazo", color: "#FF9933" },
+        {
+          key: "new_feature",
+          label: "nova funcionalidade",
+          color: "#33FFA8",
+        },
+        { key: "bug", label: "bug", color: "#FF3366" },
+        { key: "security", label: "segurança", color: "#33FFD1" },
+        {
+          key: "documentation",
+          label: "documentação",
+          color: "#338CFF",
+        },
+        {
+          key: "user_feedback",
+          label: "feedback do usuário",
+          color: "#33FFEB",
+        },
+        {
+          key: "performance_improvement",
+          label: "melhoria de performance",
+          color: "#33FF57",
+        },
+        { key: "integration", label: "integração", color: "#F933FF" },
+      ];
+
+      return tags.find((t) => t.key === tag);
+    },
+  },
+  setup() {
+    const timeAgo = new TimeAgo("pt");
+
+    const formatTimeAgo = (createdAt) => {
+      const createdAtDate = new Date(createdAt);
+      const seconds = createdAtDate.getSeconds();
+      const minutes = createdAtDate.getMinutes();
+      const hours = createdAtDate.getHours();
+      const days = createdAtDate.getDate();
+      const months = createdAtDate.getMonth() + 1; // Adding 1 because months are zero-indexed
+      const years = createdAtDate.getFullYear();
+
+      const currentDate = new Date();
+
+      return timeAgo.format(currentDate - years * months * days * hours * minutes * seconds);
+    };
+
+    return {
+      formatTimeAgo,
+    };
+  },
+};
+</script>
 
 <style scoped>
 .icon-card {

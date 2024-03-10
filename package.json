@@ -11,6 +11,7 @@
   "dependencies": {
     "@quasar/extras": "^1.15.0",
     "axios": "^1.6.7",
+    "javascript-time-ago": "^2.5.9",
     "jwt-decode": "^3.1.2",
     "pinia": "^2.0.17",
     "quasar": "^2.7.5",

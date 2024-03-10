@@ -30,7 +30,29 @@
   --positive: #21ba45;
   --negative: #c10015;
   --info: #31ccec;
-  --warning: #e7805d;
+  --warning: #af6349;
+
+  --tag-urgent: #af62493a;
+  --tag-critical: #ff00003a;
+  --tag-deadline: #af62493a;
+  --tag-new_feature: #0077ff3a;
+  --tag-bug: #ff66003a;
+  --tag-security: #ff00003a;
+  --tag-documentation: #00ff003a;
+  --tag-user_feedback: #ffa5003a;
+  --tag-performance_improvement: #00ff003a;
+  --tag-integration: #af62493a;
+
+  --tag-text-urgent: #af6249;
+  --tag-text-critical: #ff0000;
+  --tag-text-deadline: #af6249;
+  --tag-text-new_feature: #0077ff;
+  --tag-text-bug: #ff6600;
+  --tag-text-security: #ff0000;
+  --tag-text-documentation: #00ff00;
+  --tag-text-user_feedback: #ffa600;
+  --tag-text-performance_improvement: #00ff00;
+  --tag-text-integration: #af6249;
 }
 
 .pointer {
