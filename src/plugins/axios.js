@@ -14,8 +14,8 @@ const addAuthorizationToken = (data, headers) => {
   const useAuthentication = authentication();
   const _auth = useAuthentication._auth;
 
-  if (_auth && _auth.token) {
-    headers.Authorization = `Bearer ${_auth.token}`;
+  if (_auth) {
+    headers.Authorization = `Bearer ${_auth}`;
   }
 
   if (data instanceof FormData) return data;
@@ -54,7 +54,7 @@ _axios.interceptors.request.use(
     const _auth = useAuthentication._auth;
 
     if (!_auth) {
-      useAuthentication.logout()
+      useAuthentication.signOut()
       delete config.headers.Authorization;
     }
     return debounceInterceptor(config);
@@ -75,7 +75,7 @@ _axios.interceptors.response.use(
 
     switch (error.response.status) {
       case 401:
-        useAuthentication.logout()
+        useAuthentication.signOut()
         break;
       default:
         router.replace({

@@ -47,11 +47,9 @@ import { authentication } from './store/modules/authentication';
 /* Creating a new instance of the authentication module. */
 const useAuthentication = authentication();
 
-
 /* Making the axios plugin available to all components. */
 myApp.config.globalProperties.$axios = axios
 myApp.config.globalProperties.$authentication = useAuthentication;
-
 myApp.config.globalProperties.$router = router;
 
 // Assumes you have a <div id="app"></div> in your index.html

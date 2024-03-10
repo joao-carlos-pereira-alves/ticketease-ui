@@ -1,9 +1,9 @@
 <template>
   <q-page padding class="row items-center justify-center">
-    <div class="row login-card shadow-1">
+    <div class="row login-card shadow-1 q-mb-lg">
       <q-card
         class="col-12 col-sm-12 col-md-6 text-white no-border-radius shadow-0"
-        style="background-color: rgba(255, 255, 255, 0.1)"
+        :style="{ 'background-color': 'var(--primary)' }"
       >
         <q-card-section class="text-left">
           <small>TicketEase</small>
@@ -19,10 +19,10 @@
         </q-card-section>
       </q-card>
       <q-card
-        class="col-12 col-sm-12 col-md-6 text-white no-border-radius shadow-0 q-pa-sm"
+        class="col-12 col-sm-12 col-md-6 text-white no-border-radius shadow-0 q-pa-sm text-black"
       >
         <q-card-section>
-          <div class="text-h6 text-left text-primary">Acessar sua conta</div>
+          <div class="text-h6 text-left">Acessar sua conta</div>
         </q-card-section>
         <q-card-section>
           <q-form class="q-gutter-md" @submit="onSubmit" @reset="onReset">
@@ -56,7 +56,6 @@
               <q-checkbox
                 v-model="loginForm.rememberMe"
                 label="Mantenha-me conectado"
-                class="text-primary"
               />
             </div>
             <div class="">

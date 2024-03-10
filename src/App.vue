@@ -1,11 +1,7 @@
 <template>
-  <q-layout view="lHh LpR lFf" class="$primary">
-    <q-header v-if="!hideMenu" elevated>
-      <NavBar v-if="!hideMenu" />
-    </q-header>
-    <!-- <Drawer
-      v-if="($q.screen.md || $q.screen.lg || $q.screen.xl) && !hideMenu"
-    /> -->
+  <q-layout view="lHh LpR lFf">
+    <NavBar v-if="!hideMenu" />
+    <Drawer v-if="!hideMenu" />
     <Footer v-if="$q.screen.xs || ($q.screen.sm && !hideMenu)" />
     <q-page-container>
       <router-view />
@@ -15,15 +11,17 @@
 
 <script>
 import NavBar from "./components/navbar/Index.vue";
+import Drawer from "./components/drawer/Index.vue";
 import Footer from "./components/footer/Index.vue";
 
 export default {
   components: {
     NavBar,
     Footer,
+    Drawer
   },
-  beforeDestroy() {
-    // this.$authentication.logout()
+  beforeMount() {
+    this.$authentication.checkAndFetchUser
   },
   computed: {
     hideMenu() {
