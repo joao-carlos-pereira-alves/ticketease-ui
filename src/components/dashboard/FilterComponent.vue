@@ -13,16 +13,7 @@
       </q-input>
     </q-card-section>
     <q-card-section class="col-12 col-sm-6 col-md-3">
-      <q-input
-        outlined
-        v-model="text"
-        label="Status"
-        class="bg-white rounded-borders"
-      >
-        <template #prepend>
-          <q-icon name="menu" color="primary" />
-        </template>
-      </q-input>
+      <q-select icon="menu" outlined class="bg-white" option-value="key" option-label="label" v-model="filter.status" :options="statuses" label="Status" />
     </q-card-section>
     <q-card-section class="col-12 col-sm-6 col-md-3">
       <q-btn-dropdown
@@ -30,12 +21,16 @@
         outline
         label="Filtros"
         icon="filter_list"
+        align="center"
+        :transition-show="true"
+        :transtion-duration="800"
       >
-        <q-list>
+        <q-list style="max-width: 100px;">
           <q-item v-for="tag in tags">
             <q-item-section>
               <q-item-label>
                 <q-checkbox
+                  class="text-caption"
                   v-model="filter.tags[tag.key]"
                   :label="tag.label.toUpperCase()"
                 />
@@ -66,7 +61,14 @@
           {{ getSelectedTag(tag).label }}
         </div>
       </q-chip>
-      <span class="pointer" style="min-width: 300px;" @click="clearTagFilter" v-if="Object.values(filter.tags)?.filter(e => e === true)?.length > 1"> Remover todos </span>
+      <span
+        class="pointer"
+        style="min-width: 300px"
+        @click="clearTagFilter"
+        v-if="Object.values(filter.tags)?.filter((e) => e === true)?.length > 1"
+      >
+        Remover todos
+      </span>
     </q-card-section>
   </q-card>
 </template>
@@ -89,6 +91,7 @@ export default {
         performance_improvement: false,
         integration: false,
       },
+      status: { key: 'all', label: 'Todos' }
     },
   }),
   methods: {
@@ -101,8 +104,8 @@ export default {
     clearTagFilter() {
       Object.keys(this.filter.tags).forEach((tag) => {
         this.filter.tags[tag] = false;
-      })
-    }
+      });
+    },
   },
   setup() {
     const tags = ref([
@@ -134,8 +137,20 @@ export default {
       { key: "integration", label: "Integração", color: "#F933FF" },
     ]);
 
+    const statuses = ref([
+     { key: 'all', label: 'Todos' },
+     { key: 'open', label: 'Aberto' },
+     { key: 'in_progress', label: 'Em Progresso' },
+     { key: 'waiting_for_user', label: 'Esperando por Usuário' },
+     { key: 'waiting_for_third_party', label: 'Esperando por Terceiros' },
+     { key: 'resolved', label: 'Concluído' },
+     { key: 'closed', label: 'Fechado' },
+     { key: 'canceled', label: 'Cancelado' }
+    ])
+
     return {
       tags,
+      statuses
     };
   },
 };
