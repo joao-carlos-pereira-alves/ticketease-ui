@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { axios } from "../../plugins/axios";
 import { defineStore } from "pinia";
-import App from "../../main.js"
-import { getTickets as requestTickets } from "../../api/tickets.js"
+import App from "../../main.js";
+import { getTickets as requestTickets } from "../../api/tickets.js";
 
 export const ticket = defineStore("ticket", {
   state: () => ({
@@ -11,29 +11,44 @@ export const ticket = defineStore("ticket", {
     pagination: {
       total: 0,
       per_page: 5,
-      page: 1
+      page: 1,
     },
-    orderBy: 'inserted_at_desc'
+    offset: 0,
+    filterParams: {},
+    orderBy: "inserted_at_desc",
   }),
-  getters: {
-  },
+  getters: {},
   actions: {
-    async getTickets(filter_params = null) {
+    async getTickets() {
       this.setLoading(true);
 
-      const { tickets, pagination } = await requestTickets(filter_params);
+      const paginationParams          = { ...this.pagination };
+      const filterParams              = { ...this.filterParams };
+      const { tickets, pagination }   = await requestTickets(filterParams, paginationParams);
+      const { total, per_page, page } = pagination;
+      const offset                    = total === 0 ? 1 : Math.ceil(total / per_page)
 
       this.tickets = tickets;
-      console.log('aaa', pagination)
-      this.pagination = pagination;
+      this.pagination = {
+        total: total || 0,
+        per_page: per_page || 5,
+        page: Number((page && page <= 0 ? 1 : page)) || 1
+      };
 
+      this.setOffSet(offset)
       this.setLoading(false);
     },
     setLoading(v) {
-      this.loading = v
+      this.loading = v;
     },
     setOrder(order) {
-      this.orderBy = order
+      this.orderBy = order;
+    },
+    setFilterParams(filter_params) {
+      this.filterParams = filter_params;
+    },
+    setOffSet(off_set) {
+      this.offset = off_set
     }
   },
 });

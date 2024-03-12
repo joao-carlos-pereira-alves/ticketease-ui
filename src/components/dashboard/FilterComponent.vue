@@ -157,8 +157,9 @@ export default {
       }
 
       this.debouncedFetchFilteredTickets = setTimeout(() => {
-        const filterParams = this.formatFilter();
-        this.$ticket.getTickets(filterParams);
+        const filteredParams = this.formatFilter();
+        this.$ticket.setFilterParams(filteredParams);
+        this.$ticket.getTickets();
       }, 250);
     },
   },

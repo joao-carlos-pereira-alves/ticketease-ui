@@ -14,7 +14,13 @@
       </div>
       <div class="col text-right">
         Ordenar por:
-        <q-btn-dropdown class="q-ml-xs" dense flat color="primary" :label="orderBy.label">
+        <q-btn-dropdown
+          class="q-ml-xs"
+          dense
+          flat
+          color="primary"
+          :label="orderBy.label"
+        >
           <q-list>
             <q-item
               v-for="order in orders"
@@ -73,6 +79,18 @@
         </q-card-section>
       </q-card>
     </div>
+    <div class="col-12 row justify-center q-mt-md" v-if="$ticket.offset">
+      <q-pagination
+        v-model="$ticket.pagination.page"
+        :max="$ticket.offset"
+        direction-links
+        push
+        color="second"
+        active-design="push"
+        active-color="primary"
+        @update:model-value="$ticket.getTickets"
+      />
+    </div>
   </div>
 </template>
 
@@ -128,7 +146,7 @@ export default {
     },
     setOrderBy(order_by) {
       this.orderBy = this.orders.find((o) => o.key === order_by);
-      this.$ticket.setOrder(order_by)
+      this.$ticket.setOrder(order_by);
     },
   },
   setup() {
@@ -151,18 +169,23 @@ export default {
       {
         key: "inserted_at_desc",
         label: "Data Crescente",
-      }
+      },
     ];
 
     return {
       formatTimeAgo,
-      orders,
+      orders
     };
   },
 };
 </script>
 
 <style scoped>
+.scroll-area {
+  width: min(85vw, 42.5vw);
+  height: 500px;
+}
+
 .icon-card {
   background-color: var(--primary-blur);
   color: var(--primary);
