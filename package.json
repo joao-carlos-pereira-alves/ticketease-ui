@@ -13,6 +13,7 @@
     "axios": "^1.6.7",
     "javascript-time-ago": "^2.5.9",
     "jwt-decode": "^3.1.2",
+    "moment": "^2.30.1",
     "pinia": "^2.0.17",
     "quasar": "^2.7.5",
     "vue": "^3.2.37",

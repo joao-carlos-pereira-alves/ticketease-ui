@@ -79,9 +79,7 @@ _axios.interceptors.response.use(
         useAuthentication.signOut()
         break;
       default:
-        router.replace({
-          path: "/",
-        });
+        return;
     }
     return Promise.reject(error);
   }

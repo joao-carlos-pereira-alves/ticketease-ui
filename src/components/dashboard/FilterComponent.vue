@@ -3,9 +3,11 @@
     <q-card-section class="col-12 col-sm-12 col-md-6">
       <q-input
         outlined
-        v-model="text"
+        v-model="filter.search_term"
         label="Procure por chamados"
         class="bg-white rounded-borders"
+        placeholder="Procure por nomes ou descrição"
+        @update:model-value="fetchFilteredTickets"
       >
         <template #prepend>
           <q-icon name="search" color="primary" />
@@ -13,7 +15,17 @@
       </q-input>
     </q-card-section>
     <q-card-section class="col-12 col-sm-6 col-md-3">
-      <q-select icon="menu" outlined class="bg-white" option-value="key" option-label="label" v-model="filter.status" :options="statuses" label="Status" />
+      <q-select
+        icon="menu"
+        outlined
+        class="bg-white"
+        option-value="key"
+        option-label="label"
+        v-model="filter.status"
+        :options="statuses"
+        label="Status"
+        @update:model-value="fetchFilteredTickets"
+      />
     </q-card-section>
     <q-card-section class="col-12 col-sm-6 col-md-3">
       <q-btn-dropdown
@@ -25,13 +37,14 @@
         :transition-show="true"
         :transtion-duration="800"
       >
-        <q-list style="max-width: 100px;">
+        <q-list style="max-width: 100px">
           <q-item v-for="tag in tags">
             <q-item-section>
               <q-item-label>
                 <q-checkbox
                   class="text-caption"
                   v-model="filter.tags[tag.key]"
+                  @update:model-value="fetchFilteredTickets"
                   :label="tag.label.toUpperCase()"
                 />
               </q-item-label>
@@ -91,7 +104,8 @@ export default {
         performance_improvement: false,
         integration: false,
       },
-      status: { key: 'all', label: 'Todos' }
+      status: { key: "all", label: "Todos" },
+      search_term: null
     },
   }),
   methods: {
@@ -105,6 +119,47 @@ export default {
       Object.keys(this.filter.tags).forEach((tag) => {
         this.filter.tags[tag] = false;
       });
+    },
+    formatFilter() {
+      const selectedTags = Object.keys(this.filter.tags).filter(
+        (tag) => this.filter.tags[tag]
+      );
+      const statusKey = this.filter.status.key;
+      const searchTerm = this.filter.search_term;
+      const orderBy = this.$ticket.orderBy;
+      const filterObject = {};
+
+      if (selectedTags?.length > 0) {
+        filterObject.tags = selectedTags;
+      }
+
+      if (statusKey && statusKey !== "all") {
+        filterObject.status = statusKey;
+      }
+
+      if (
+        searchTerm !== null &&
+        searchTerm !== undefined &&
+        searchTerm.length
+      ) {
+        filterObject.search_term = searchTerm;
+      }
+
+      if (orderBy) {
+        filterObject.order_by = orderBy;
+      }
+
+      return filterObject;
+    },
+    fetchFilteredTickets() {
+      if (this.debouncedFetchFilteredTickets) {
+        clearTimeout(this.debouncedFetchFilteredTickets);
+      }
+
+      this.debouncedFetchFilteredTickets = setTimeout(() => {
+        const filterParams = this.formatFilter();
+        this.$ticket.getTickets(filterParams);
+      }, 250);
     },
   },
   setup() {
@@ -138,20 +193,28 @@ export default {
     ]);
 
     const statuses = ref([
-     { key: 'all', label: 'Todos' },
-     { key: 'open', label: 'Aberto' },
-     { key: 'in_progress', label: 'Em Progresso' },
-     { key: 'waiting_for_user', label: 'Esperando por Usuário' },
-     { key: 'waiting_for_third_party', label: 'Esperando por Terceiros' },
-     { key: 'resolved', label: 'Concluído' },
-     { key: 'closed', label: 'Fechado' },
-     { key: 'canceled', label: 'Cancelado' }
-    ])
+      { key: "all", label: "Todos" },
+      { key: "open", label: "Aberto" },
+      { key: "in_progress", label: "Em Progresso" },
+      { key: "waiting_for_user", label: "Esperando por Usuário" },
+      { key: "waiting_for_third_party", label: "Esperando por Terceiros" },
+      { key: "resolved", label: "Concluído" },
+      { key: "closed", label: "Fechado" },
+      { key: "canceled", label: "Cancelado" },
+    ]);
 
     return {
       tags,
-      statuses
+      statuses,
     };
+  },
+  mounted() {
+    this.$watch(
+      () => this.$ticket.orderBy,
+      () => {
+        this.fetchFilteredTickets();
+      }
+    );
   },
 };
 </script>

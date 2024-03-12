@@ -8,17 +8,22 @@
         <span
           style="color: var(--primary)"
           class="text-body2 text-weight-medium"
-          >34</span
+          >{{ $ticket?.pagination?.total || 0 }}</span
         >
         chamados
       </div>
       <div class="col text-right">
         Ordenar por:
-        <q-btn-dropdown class="q-ml-xs" dense flat color="primary" label="Date">
+        <q-btn-dropdown class="q-ml-xs" dense flat color="primary" :label="orderBy.label">
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              v-for="order in orders"
+              clickable
+              v-close-popup
+              @click="setOrderBy(order.key)"
+            >
               <q-item-section>
-                <q-item-label>Photos</q-item-label>
+                <q-item-label>{{ order.label }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -62,7 +67,7 @@
           <q-space></q-space>
           <div class="col text-right">
             <small class="text-caption">
-              {{ formatTimeAgo(ticket.created_at) }}
+              {{ formatTimeAgo(ticket.created_at) }} atrás
             </small>
           </div>
         </q-card-section>
@@ -72,15 +77,22 @@
 </template>
 
 <script>
-import TimeAgo from "javascript-time-ago";
-import pt from "javascript-time-ago/locale/pt";
+import moment from "moment";
+import "moment/dist/locale/pt-br";
 
-TimeAgo.addDefaultLocale(pt);
+moment.locale("pt-br");
 
 export default {
   beforeCreate() {
     this.$ticket.getTickets();
   },
+  emits: ["order"],
+  data: () => ({
+    orderBy: {
+      key: "inserted_at_desc",
+      label: "Data",
+    },
+  }),
   methods: {
     translateTag(tag) {
       const tags = [
@@ -114,26 +126,37 @@ export default {
 
       return tags.find((t) => t.key === tag);
     },
+    setOrderBy(order_by) {
+      this.orderBy = this.orders.find((o) => o.key === order_by);
+      this.$ticket.setOrder(order_by)
+    },
   },
   setup() {
-    const timeAgo = new TimeAgo("pt");
-
     const formatTimeAgo = (createdAt) => {
       const createdAtDate = new Date(createdAt);
-      const seconds = createdAtDate.getSeconds();
-      const minutes = createdAtDate.getMinutes();
-      const hours = createdAtDate.getHours();
-      const days = createdAtDate.getDate();
-      const months = createdAtDate.getMonth() + 1; // Adding 1 because months are zero-indexed
-      const years = createdAtDate.getFullYear();
-
       const currentDate = new Date();
 
-      return timeAgo.format(currentDate - years * months * days * hours * minutes * seconds);
+      createdAtDate.setHours(createdAtDate.getHours() - 3);
+
+      const diffInMilliseconds = currentDate - createdAtDate;
+
+      return moment.duration(diffInMilliseconds).humanize(false);
     };
+
+    const orders = [
+      {
+        key: "inserted_at_asc",
+        label: "Data Crescente",
+      },
+      {
+        key: "inserted_at_desc",
+        label: "Data Crescente",
+      }
+    ];
 
     return {
       formatTimeAgo,
+      orders,
     };
   },
 };
