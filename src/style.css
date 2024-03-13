@@ -34,14 +34,14 @@
 
   --tag-urgent: #af62493a;
   --tag-critical: #ff00003a;
-  --tag-deadline: #af62493a;
+  --tag-deadline: #ccc01f3a;
   --tag-new_feature: #0077ff3a;
   --tag-bug: #ff66003a;
   --tag-security: #ff00003a;
   --tag-documentation: #00ff003a;
   --tag-user_feedback: #ffa5003a;
   --tag-performance_improvement: #00ff003a;
-  --tag-integration: #af62493a;
+  --tag-integration: #6363633a;
 
   --tag-text-urgent: #af6249;
   --tag-text-critical: #ff0000;

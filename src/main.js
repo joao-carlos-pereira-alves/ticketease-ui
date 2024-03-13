@@ -48,16 +48,18 @@ myApp.use(router);
 /* Importing the authentication module from the authentication.js file. */
 import { authentication } from "./store/modules/authentication";
 import { ticket } from "./store/modules/tickets.js";
+import { workspaceUser } from "./store/modules/workspace_users.js";
 
 /* Creating a new instance of the authentication module. */
 const useAuthentication = authentication();
-
-const useTicket = ticket();
+const useTicket         = ticket();
+const useWorkspaceUser  = workspaceUser();
 
 /* Making the axios plugin available to all components. */
 myApp.config.globalProperties.$axios = axios;
 myApp.config.globalProperties.$authentication = useAuthentication;
 myApp.config.globalProperties.$ticket = useTicket;
+myApp.config.globalProperties.$workspaceUser = useWorkspaceUser;
 myApp.config.globalProperties.$router = router;
 
 myApp.config.globalProperties.$truncateString = function (str, maxLength) {
@@ -76,45 +78,77 @@ myApp.config.globalProperties.$capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+myApp.config.globalProperties.$formatPriority = (priority = 'low') => {
+  const priorities = {
+    low: {
+      label: 'baixa',
+      color: '#5cb85c', // verde
+      icon: 'low_priority'
+    },
+    medium: {
+      label: 'média',
+      color: '#f0ad4e', // amarelo
+      icon: 'priority'
+    },
+    high: {
+      label: 'alta',
+      color: '#d9534f', // vermelho
+      icon: 'priority_high'
+    }
+  };
+
+  return priorities[priority]
+};
+
 myApp.config.globalProperties.$getTagColor = (tag) => {
   const colors = {
     urgent: {
+      iconName: "warning", // ou 'alert'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     critical: {
+      iconName: "error", // ou 'critical'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     deadline: {
+      iconName: "schedule", // ou 'clock'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     new_feature: {
+      iconName: "add", // ou 'star'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     bug: {
+      iconName: "bug_report",
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     security: {
+      iconName: "lock", // ou 'shield'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     documentation: {
+      iconName: "book", // ou 'book'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     user_feedback: {
+      iconName: "comment", // ou 'speech'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     performance_improvement: {
+      iconName: "rocket", // ou 'rocket'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },
     integration: {
+      iconName: "settings", // ou 'gear'
       backgroundColor: `var(--tag-${tag})`,
       textColor: `var(--tag-text-${tag})`,
     },

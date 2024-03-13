@@ -114,11 +114,14 @@ export default {
     },
     unselectTag(tag) {
       this.filter.tags[tag] = false;
+      this.fetchFilteredTickets();
     },
     clearTagFilter() {
       Object.keys(this.filter.tags).forEach((tag) => {
         this.filter.tags[tag] = false;
       });
+
+      this.fetchFilteredTickets();
     },
     formatFilter() {
       const selectedTags = Object.keys(this.filter.tags).filter(

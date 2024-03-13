@@ -22,6 +22,7 @@ export default {
   },
   beforeCreate() {
     this.$authentication.checkAndFetchUser;
+    this.$workspaceUser.getWorkspaceUsers();
   },
   computed: {
     hideMenu() {

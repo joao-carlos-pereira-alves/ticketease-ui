@@ -4,6 +4,23 @@
       <q-toolbar class="text-primary">
         <q-space></q-space>
         <q-btn-dropdown
+          color="black"
+          push
+          no-caps
+          rounded
+          flat
+          icon="workspaces"
+          @click="onMainClick"
+        >
+          <q-list>
+            <q-item v-for="workspaceUser in $workspaceUser.workspaceUsers" clickable v-close-popup>
+              <q-item-section>
+                {{ workspaceUser?.workspace?.title || "-" }}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+        <q-btn-dropdown
           dense
           rounded
           flat
@@ -19,7 +36,12 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn-dropdown flat text-color="black" :label="$authentication?.user?.name || 'Indefinido'" :loading="$authentication.loading">
+        <q-btn-dropdown
+          flat
+          text-color="black"
+          :label="$authentication?.user?.name || 'Indefinido'"
+          :loading="$authentication.loading"
+        >
           <q-list>
             <q-item clickable v-close-popup @click="$authentication.signOut">
               <q-item-section avatar>
@@ -34,7 +56,6 @@
   </q-header>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style scoped></style>
