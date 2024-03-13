@@ -2,18 +2,21 @@
 import { axios } from "../../plugins/axios.js";
 import { defineStore } from "pinia";
 import App from "../../main.js";
+import { getWorkspace as requestWorkspace } from "../../api/workspaces.js";
 
 export const workspace = defineStore("workspace", {
   state: () => ({
-    workspace: {},
+    currentWorkspace: {},
     loading: false,
   }),
   getters: {},
   actions: {
-    async getWorkspace() {
-      // this.setLoading(true);
-      // this.workspaceUsers = await requestWorkspaceUsers();
-      // this.setLoading(false);
+    async getWorkspace(workspace_id) {
+      if (!workspace_id) return;
+
+      this.setLoading(true);
+      this.currentWorkspace = await requestWorkspace(workspace_id);
+      this.setLoading(false);
     },
     setLoading(v) {
       this.loading = v;

@@ -49,17 +49,23 @@ myApp.use(router);
 import { authentication } from "./store/modules/authentication";
 import { ticket } from "./store/modules/tickets.js";
 import { workspaceUser } from "./store/modules/workspace_users.js";
+import { workspace } from "./store/modules/workspace.js";
+import { callback } from "./store/modules/callbacks.js";
 
 /* Creating a new instance of the authentication module. */
 const useAuthentication = authentication();
 const useTicket         = ticket();
 const useWorkspaceUser  = workspaceUser();
+const useWorkspace      = workspace();
+const useCallback       = callback();
 
 /* Making the axios plugin available to all components. */
 myApp.config.globalProperties.$axios = axios;
 myApp.config.globalProperties.$authentication = useAuthentication;
 myApp.config.globalProperties.$ticket = useTicket;
 myApp.config.globalProperties.$workspaceUser = useWorkspaceUser;
+myApp.config.globalProperties.$workspace = useWorkspace;
+myApp.config.globalProperties.$callbacks = useCallback;
 myApp.config.globalProperties.$router = router;
 
 myApp.config.globalProperties.$truncateString = function (str, maxLength) {

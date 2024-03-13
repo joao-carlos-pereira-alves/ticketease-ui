@@ -140,9 +140,6 @@ import NoData from "../../assets/no-data.jpeg";
 moment.locale("pt-br");
 
 export default {
-  beforeCreate() {
-    this.$ticket.getTickets();
-  },
   emits: ["order"],
   data: () => ({
     orderBy: {

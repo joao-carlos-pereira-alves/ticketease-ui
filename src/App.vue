@@ -21,8 +21,7 @@ export default {
     Drawer
   },
   beforeCreate() {
-    this.$authentication.checkAndFetchUser;
-    this.$workspaceUser.getWorkspaceUsers();
+    if (this?.$authentication?._auth) this.$callbacks.call();
   },
   computed: {
     hideMenu() {

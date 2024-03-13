@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 import router from "../../router";
 import App from "../../main.js"
 import { fetchCurrentUser } from "../../api/users.js";
+import { callback } from "./callbacks.js";
 
 export const authentication = defineStore("authentication", {
   state: () => ({
@@ -37,6 +38,7 @@ export const authentication = defineStore("authentication", {
         }
 
         router.push({ name: "Dashboard" });
+        this.afterLoginCallbacks();
       } catch (error) {
         return error?.response || null;
       }
@@ -54,6 +56,10 @@ export const authentication = defineStore("authentication", {
     async setCurrentUser() {
       this.user = await fetchCurrentUser();
       this.updateLoadingState(false)
+    },
+    async afterLoginCallbacks() {
+      const useCallback = callback()
+      await useCallback.call();
     }
   },
 });

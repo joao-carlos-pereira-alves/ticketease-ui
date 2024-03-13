@@ -13,9 +13,30 @@
           @click="onMainClick"
         >
           <q-list>
-            <q-item v-for="workspaceUser in $workspaceUser.workspaceUsers" clickable v-close-popup>
+            <q-item
+              v-for="workspaceUser in $workspaceUser.workspaceUsers"
+              clickable
+              v-close-popup
+            >
               <q-item-section>
-                {{ workspaceUser?.workspace?.title || "-" }}
+                <div class="">
+                  <!-- Falta colocar o evento de clique para trocar de workspace e chamar o método call novamente, e lembrar de filtrar os tickets por workspace atual. -->
+                  <q-icon
+                    :name="
+                      workspaceUser?.workspace?.id ==
+                      $workspace?.currentWorkspace?.id
+                        ? 'radio_button_checked'
+                        : 'radio_button_unchecked'
+                    "
+                    :color="
+                      workspaceUser?.workspace?.id ==
+                      $workspace?.currentWorkspace?.id
+                        ? 'primary'
+                        : 'grey'
+                    "
+                  />
+                  {{ workspaceUser?.workspace?.title || "-" }}
+                </div>
               </q-item-section>
             </q-item>
           </q-list>
