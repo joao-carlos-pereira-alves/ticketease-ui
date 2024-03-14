@@ -15,14 +15,22 @@ export const callback = defineStore("callback", {
       try {
         const { checkAndFetchUser } = authentication();
         const { getWorkspaceUsers } = workspaceUser();
-        const { getTickets } = ticket();
+        // const { getTickets } = ticket();
 
         await checkAndFetchUser;
         await getWorkspaceUsers();
-        await getTickets();
+        // await getTickets();
       } catch (error) {
         console.error("Erro ao executar ação call:", error);
       }
     },
+    async onChangeWorkspace() {
+      try {
+        const { getTickets } = ticket();
+        await getTickets();
+      } catch (error) {
+        console.error("Erro ao executar ação onChangeWorkspace:", error);
+      }
+    }
   },
 });

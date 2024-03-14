@@ -3,6 +3,7 @@ import { axios } from "../../plugins/axios";
 import { defineStore } from "pinia";
 import App from "../../main.js";
 import { getTickets as requestTickets } from "../../api/tickets.js";
+import { workspace } from "./workspace.js";
 
 export const ticket = defineStore("ticket", {
   state: () => ({
@@ -22,20 +23,28 @@ export const ticket = defineStore("ticket", {
     async getTickets() {
       this.setLoading(true);
 
-      const paginationParams          = { ...this.pagination };
-      const filterParams              = { ...this.filterParams };
-      const { tickets, pagination }   = await requestTickets(filterParams, paginationParams);
+      const { currentWorkspace } = workspace();
+      const paginationParams = { ...this.pagination };
+      const currentWorkspaceId = currentWorkspace.id;
+      const filterParams = {
+        ...this.filterParams,
+        workspace_id: currentWorkspaceId,
+      };
+      const { tickets, pagination } = await requestTickets(
+        filterParams,
+        paginationParams
+      );
       const { total, per_page, page } = pagination;
-      const offset                    = total === 0 ? 1 : Math.ceil(total / per_page)
+      const offset = total === 0 ? 1 : Math.ceil(total / per_page);
 
       this.tickets = tickets;
       this.pagination = {
         total: total || 0,
         per_page: per_page || 5,
-        page: Number((page && page <= 0 ? 1 : page)) || 1
+        page: Number(page && page <= 0 ? 1 : page) || 1,
       };
 
-      this.setOffSet(offset)
+      this.setOffSet(offset);
       this.setLoading(false);
     },
     setLoading(v) {
@@ -48,7 +57,7 @@ export const ticket = defineStore("ticket", {
       this.filterParams = filter_params;
     },
     setOffSet(off_set) {
-      this.offset = off_set
-    }
+      this.offset = off_set;
+    },
   },
 });
