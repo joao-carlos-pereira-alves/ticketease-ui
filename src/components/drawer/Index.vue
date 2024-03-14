@@ -27,6 +27,7 @@
                 v-ripple
                 class="q-mt-sm"
                 style="border-radius: 10px"
+                :disabled="menuItem.disabled"
               >
                 <q-item-section avatar>
                   <q-icon :name="menuItem.icon" />
@@ -65,7 +66,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, triggerRef } from "vue";
 import dashboardIlustration from "../../assets/dashboard-ilustration.jpeg";
 
 const menuList = [
@@ -76,10 +77,12 @@ const menuList = [
   {
     icon: "analytics",
     label: "Gráficos",
+    disabled: true,
   },
   {
     icon: "settings",
     label: "Preferências",
+    disabled: true,
   },
 ];
 

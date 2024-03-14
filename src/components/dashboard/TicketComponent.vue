@@ -45,6 +45,8 @@
           'medium-priority': ticket.priority == 'medium',
           'high-priority': ticket.priority == 'high',
         }"
+        class="pointer-card"
+        @click="$emit('select-filter', ticket)"
       >
         <q-card-section class="row q-mb-md">
           <div
@@ -56,10 +58,13 @@
             />
           </div>
           <div
-            class="col text-subtitle2 text-weight-bold text-left q-px-md row"
+            class="col-8 text-weight-bold text-left q-px-md row"
           >
             <div class="col-12">
-              <span class="">{{ $capitalize(ticket.subject) }}</span>
+              <span class="" v-if="!$q.screen.xs">{{ $truncateString($capitalize(ticket.subject), 50) }}</span>
+              <span v-else>
+                {{ $truncateString($capitalize(ticket.subject), 35) }}
+              </span>
               <span v-if="!$q.screen.xs">
                 <!-- Limita a exibição de tags a no máximo 2 -->
                 <template v-for="(tag, index) in ticket.tags.slice(0, 2)">
@@ -71,7 +76,7 @@
                     class="rounded-borders q-mx-sm q-pa-md"
                   >
                     <div :style="`color: ${$getTagColor(tag).textColor}`">
-                      {{ $capitalize(translateTag(tag).label) }}
+                      {{ $capitalize($translateTag(tag).label) }}
                     </div>
                   </q-chip>
                 </template>
@@ -88,7 +93,7 @@
           <div class="col text-right row justify-between items-center">
             <div class="col-12 text-right row items-center justify-end">
               <!-- Usando ícone do Quasar para representar a prioridade -->
-              Prioridade: {{ $formatPriority(ticket.priority).label }}
+              <span v-if="!$q.screen.xs">Prioridade: {{ $formatPriority(ticket.priority).label }}</span>
               <q-icon
                 name="info"
                 :style="`color: ${$formatPriority(ticket.priority).color}`"
@@ -98,8 +103,8 @@
             </div>
             <div class="col-12 text-caption row items-end justify-end">
               <div class="">
-                <q-icon name="access_time" color="grey" size="18px"></q-icon>
-                {{ formatTimeAgo(ticket.created_at) }} atrás
+                <q-icon name="access_time" color="grey" size="18px" class="q-mr-xs"></q-icon>
+                <span :class="{'text-caption': $q.screen.xs}" >{{ $formatTimeAgo(ticket.created_at) }} atrás</span>
               </div>
             </div>
           </div>
@@ -112,7 +117,13 @@
           <!-- <q-card-section class="text-subtitle1 text-center text-weight-medium">
             Por enquanto está vazio, mas assim que um chamado for criado, vamos te notificar!
           </q-card-section> -->
-          <q-img :src="noDataImage" fit="cover" spinner-color="primary" loading="lazy" style="max-width: 50%;" />
+          <q-img
+            :src="noDataImage"
+            fit="cover"
+            spinner-color="primary"
+            loading="lazy"
+            style="max-width: 50%"
+          />
         </q-card-section>
       </q-card>
     </div>
@@ -132,15 +143,10 @@
 </template>
 
 <script>
-import moment from "moment";
-import "moment/dist/locale/pt-br";
-
 import NoData from "../../assets/no-data.jpeg";
 
-moment.locale("pt-br");
-
 export default {
-  emits: ["order"],
+  emits: ["order", "select-filter"],
   data: () => ({
     orderBy: {
       key: "inserted_at_desc",
@@ -149,55 +155,12 @@ export default {
     noDataImage: NoData,
   }),
   methods: {
-    translateTag(tag) {
-      const tags = [
-        { key: "urgent", label: "urgente", color: "#FF5733" },
-        { key: "critical", label: "crítico", color: "#FF3333" },
-        { key: "deadline", label: "prazo", color: "#FF9933" },
-        {
-          key: "new_feature",
-          label: "nova funcionalidade",
-          color: "#33FFA8",
-        },
-        { key: "bug", label: "bug", color: "#FF3366" },
-        { key: "security", label: "segurança", color: "#33FFD1" },
-        {
-          key: "documentation",
-          label: "documentação",
-          color: "#338CFF",
-        },
-        {
-          key: "user_feedback",
-          label: "feedback do usuário",
-          color: "#33FFEB",
-        },
-        {
-          key: "performance_improvement",
-          label: "melhoria de performance",
-          color: "#33FF57",
-        },
-        { key: "integration", label: "integração", color: "#F933FF" },
-      ];
-
-      return tags.find((t) => t.key === tag);
-    },
     setOrderBy(order_by) {
       this.orderBy = this.orders.find((o) => o.key === order_by);
       this.$ticket.setOrder(order_by);
     },
   },
   setup() {
-    const formatTimeAgo = (createdAt) => {
-      const createdAtDate = new Date(createdAt);
-      const currentDate = new Date();
-
-      createdAtDate.setHours(createdAtDate.getHours() - 3);
-
-      const diffInMilliseconds = currentDate - createdAtDate;
-
-      return moment.duration(diffInMilliseconds).humanize(false);
-    };
-
     const orders = [
       {
         key: "inserted_at_asc",
@@ -210,7 +173,6 @@ export default {
     ];
 
     return {
-      formatTimeAgo,
       orders,
     };
   },
@@ -235,8 +197,12 @@ export default {
   height: 500px;
 }
 
-.icon-card {
-  background-color: var(--primary-blur);
-  color: var(--primary);
+.pointer-card:hover {
+  cursor: pointer;
+  filter: brightness(90%);
+}
+
+.pointer-card:active {
+  top: 1px;
 }
 </style>

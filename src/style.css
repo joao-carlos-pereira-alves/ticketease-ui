@@ -76,6 +76,11 @@
   width: min(85vw, 90vh);
 }
 
+.icon-card {
+  background-color: var(--primary-blur);
+  color: var(--primary);
+}
+
 body {
   overflow: hidden;
   color: black;

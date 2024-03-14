@@ -2,6 +2,9 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { Quasar, Notify } from "quasar";
 import "./style.css";
+import moment from "moment";
+import "moment/dist/locale/pt-br";
+
 // Assumes your root component is App.vue
 // and placed in same folder as main.js
 import App from "./App.vue";
@@ -45,6 +48,8 @@ myApp.use(pinia);
 // myApp.use(store);
 myApp.use(router);
 
+moment.locale("pt-br");
+
 /* Importing the authentication module from the authentication.js file. */
 import { authentication } from "./store/modules/authentication";
 import { ticket } from "./store/modules/tickets.js";
@@ -54,10 +59,10 @@ import { callback } from "./store/modules/callbacks.js";
 
 /* Creating a new instance of the authentication module. */
 const useAuthentication = authentication();
-const useTicket         = ticket();
-const useWorkspaceUser  = workspaceUser();
-const useWorkspace      = workspace();
-const useCallback       = callback();
+const useTicket = ticket();
+const useWorkspaceUser = workspaceUser();
+const useWorkspace = workspace();
+const useCallback = callback();
 
 /* Making the axios plugin available to all components. */
 myApp.config.globalProperties.$axios = axios;
@@ -84,26 +89,26 @@ myApp.config.globalProperties.$capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-myApp.config.globalProperties.$formatPriority = (priority = 'low') => {
+myApp.config.globalProperties.$formatPriority = (priority = "low") => {
   const priorities = {
     low: {
-      label: 'baixa',
-      color: '#5cb85c', // verde
-      icon: 'low_priority'
+      label: "baixa",
+      color: "#5cb85c", // verde
+      icon: "low_priority",
     },
     medium: {
-      label: 'média',
-      color: '#f0ad4e', // amarelo
-      icon: 'priority'
+      label: "média",
+      color: "#f0ad4e", // amarelo
+      icon: "priority",
     },
     high: {
-      label: 'alta',
-      color: '#d9534f', // vermelho
-      icon: 'priority_high'
-    }
+      label: "alta",
+      color: "#d9534f", // vermelho
+      icon: "priority_high",
+    },
   };
 
-  return priorities[priority]
+  return priorities[priority];
 };
 
 myApp.config.globalProperties.$getTagColor = (tag) => {
@@ -161,6 +166,50 @@ myApp.config.globalProperties.$getTagColor = (tag) => {
   };
 
   return colors[tag];
+};
+
+myApp.config.globalProperties.$formatTimeAgo = (createdAt) => {
+  const createdAtDate = new Date(createdAt);
+  const currentDate = new Date();
+
+  createdAtDate.setHours(createdAtDate.getHours() - 3);
+
+  const diffInMilliseconds = currentDate - createdAtDate;
+
+  return moment.duration(diffInMilliseconds).humanize(false);
+};
+
+myApp.config.globalProperties.$translateTag = (tag) => {
+  const tags = [
+    { key: "urgent", label: "urgente", color: "#FF5733" },
+    { key: "critical", label: "crítico", color: "#FF3333" },
+    { key: "deadline", label: "prazo", color: "#FF9933" },
+    {
+      key: "new_feature",
+      label: "nova funcionalidade",
+      color: "#33FFA8",
+    },
+    { key: "bug", label: "bug", color: "#FF3366" },
+    { key: "security", label: "segurança", color: "#33FFD1" },
+    {
+      key: "documentation",
+      label: "documentação",
+      color: "#338CFF",
+    },
+    {
+      key: "user_feedback",
+      label: "feedback do usuário",
+      color: "#33FFEB",
+    },
+    {
+      key: "performance_improvement",
+      label: "melhoria de performance",
+      color: "#33FF57",
+    },
+    { key: "integration", label: "integração", color: "#F933FF" },
+  ];
+
+  return tags.find((t) => t.key === tag);
 };
 
 // Assumes you have a <div id="app"></div> in your index.html
