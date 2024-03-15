@@ -19,7 +19,13 @@
             />
           </div>
           <q-toolbar-title class="row items-center">
-            <div class="col-12 text-weight-bold row" :class="{'text-h6': !$q.screen.xs, 'text-subtitle2': $q.screen.xs}">
+            <div
+              class="col-12 text-weight-bold row"
+              :class="{
+                'text-h6': !$q.screen.xs,
+                'text-subtitle2': $q.screen.xs,
+              }"
+            >
               {{ $truncateString($capitalize(ticket.subject), 37) }}
               <q-tooltip v-if="ticket.subject.length >= 37">
                 {{ ticket.subject }}
@@ -57,7 +63,9 @@
               size="22px"
               class="q-mr-xs"
             ></q-icon>
-            <span v-if="!$q.screen.xs">{{ $formatTimeAgo(ticket.created_at) }} atrás</span>
+            <span v-if="!$q.screen.xs"
+              >{{ $formatTimeAgo(ticket.created_at) }} atrás</span
+            >
           </div>
         </q-toolbar>
       </q-card-section>
@@ -68,15 +76,64 @@
         Descrição do Chamado
       </q-card-section>
       <q-card-section class="q-pt-none">
-        <q-scroll-area style="height: 150px; max-width: 100%">
+        <q-scroll-area style="height: 115px; max-width: 100%">
           <div class="description-card q-pa-sm rounded-borders">
             {{ ticket.description }}
           </div>
         </q-scroll-area>
       </q-card-section>
-      <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="OK" v-close-popup />
-      </q-card-actions>
+      <q-card-section class="text-h6 text-weight-medium q-pt-none">
+        Responder Chamado
+      </q-card-section>
+      <q-card-section class="q-py-none">
+        <q-form class="row" @submit="updateTicket">
+          <div class="col-12 q-mb-sm">
+            <q-select
+              v-model="ticketForm.status"
+              outlined
+              :options="statuses"
+              option-label="label"
+              option-value="value"
+              label="Mover para o Status"
+            >
+              <template v-slot:selected-item="scope">
+                {{
+                  scope?.opt?.value != findCurrentStatus().value
+                    ? `${findCurrentStatus().label} -> ${scope.opt.label}`
+                    : scope.opt.label
+                }}
+              </template>
+            </q-select>
+          </div>
+          <div class="col-12 q-mb-sm">
+            <q-input
+              label="Adicionar Comentário"
+              outlined
+              v-model="ticketForm.answer_description"
+              type="textarea"
+              placeholder="Digite seu comentário aqui..."
+              autogrow
+              clearable
+            />
+          </div>
+          <div class="col-12 text-right q-py-md">
+            <q-btn
+              type="reset"
+              flat
+              color="grey"
+              label="Voltar"
+              v-close-popup
+              class="q-mr-sm"
+            />
+            <q-btn
+              type="submit"
+              color="primary"
+              label="Atualizar Chamado"
+              :loading="loading"
+            />
+          </div>
+        </q-form>
+      </q-card-section>
     </q-card>
   </q-dialog>
 </template>
@@ -88,6 +145,80 @@ export default {
   props: {
     open: { required: true, default: false, type: Boolean },
     ticket: { required: true, type: Object },
+  },
+  data: () => ({
+    rules: {
+      required: (v) => !!v || "Campo obrigatório",
+    },
+    ticketForm: {
+      answer_description: null,
+      status: null,
+    },
+    statuses: [
+      { value: "open", label: "Aberto" },
+      { value: "in_progress", label: "Em progresso" },
+      { value: "waiting_for_user", label: "Aguardando usuário" },
+      { value: "waiting_for_third_party", label: "Aguardando terceiros" },
+      { value: "resolved", label: "Resolvido" },
+      { value: "closed", label: "Fechado" },
+      { value: "canceled", label: "Cancelado" },
+    ],
+    loading: false,
+  }),
+  beforeMount() {
+    const currentStatus = this.statuses.find(
+      (e) => e.value === this.ticket.status
+    );
+
+    if (currentStatus) {
+      const answer_description = this?.ticket?.answer_description || null;
+
+      this.ticketForm = {
+        status: currentStatus,
+        answer_description: answer_description,
+      };
+    }
+  },
+  methods: {
+    findCurrentStatus() {
+      const currentStatus = this.statuses.find(
+        (e) => e.value === this.ticket.status
+      );
+
+      return currentStatus;
+    },
+    async updateTicket() {
+      this.updateLoading(true);
+
+      const { status, answer_description } = this.ticketForm;
+      const { id } = this.ticket;
+
+      const putTicketParams = {
+        id: id,
+        status: status.value,
+        answer_description: answer_description || "",
+      };
+
+      await this.$ticket.putTicket(putTicketParams);
+
+      this.emitSubmitNotification();
+      this.closeDialog();
+    },
+    closeDialog() {
+      this.updateLoading(false);
+      this.openDialog = false;
+    },
+    updateLoading(value) {
+      this.loading = value;
+    },
+    emitSubmitNotification() {
+      this.$q.notify({
+        message: "Chamado Atualizado com Sucesso",
+        caption: "agora mesmo",
+        color: "primary",
+        position: "bottom-right",
+      });
+    },
   },
   computed: {
     openDialog: {

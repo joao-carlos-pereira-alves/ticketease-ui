@@ -111,6 +111,20 @@ myApp.config.globalProperties.$formatPriority = (priority = "low") => {
   return priorities[priority];
 };
 
+myApp.config.globalProperties.$formatStatus = (statusKey = "open") => {
+  const statuses = {
+    open: { value: "open", label: "Aberto" },
+    in_progress: { value: "in_progress", label: "Em progresso" },
+    waiting_for_user: { value: "waiting_for_user", label: "Aguardando usuário" },
+    waiting_for_third_party: { value: "waiting_for_third_party", label: "Aguardando terceiros" },
+    resolved: { value: "resolved", label: "Resolvido" },
+    closed: { value: "closed", label: "Fechado" },
+    canceled: { value: "canceled", label: "Cancelado" },
+  };
+
+  return statuses[statusKey];
+}
+
 myApp.config.globalProperties.$getTagColor = (tag) => {
   const colors = {
     urgent: {

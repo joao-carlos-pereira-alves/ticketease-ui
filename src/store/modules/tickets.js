@@ -2,7 +2,10 @@
 import { axios } from "../../plugins/axios";
 import { defineStore } from "pinia";
 import App from "../../main.js";
-import { getTickets as requestTickets } from "../../api/tickets.js";
+import {
+  getTickets as requestTickets,
+  putTicket as updateTicket,
+} from "../../api/tickets.js";
 import { workspace } from "./workspace.js";
 
 export const ticket = defineStore("ticket", {
@@ -46,6 +49,20 @@ export const ticket = defineStore("ticket", {
 
       this.setOffSet(offset);
       this.setLoading(false);
+    },
+    async putTicket(params) {
+      const { ticket } = await updateTicket(params);
+
+      this.findAndChangeTicket(ticket);
+    },
+    findAndChangeTicket(params) {
+      const currentTicketIndex = this.tickets.findIndex(
+        (ticket) => ticket.id === params.id
+      );
+
+      if (currentTicketIndex !== -1) {
+        Object.assign(this.tickets[currentTicketIndex], params);
+      }
     },
     setLoading(v) {
       this.loading = v;
