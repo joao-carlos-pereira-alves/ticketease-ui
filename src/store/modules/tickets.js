@@ -14,7 +14,7 @@ export const ticket = defineStore("ticket", {
     loading: false,
     pagination: {
       total: 0,
-      per_page: 5,
+      per_page: 4,
       page: 1,
     },
     offset: 0,

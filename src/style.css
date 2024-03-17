@@ -1,5 +1,8 @@
+
+
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
@@ -14,12 +17,13 @@
   -webkit-text-size-adjust: 100%;
 
   --primary: #008080;
+  --secondary-bg: #004680;
   --primary-blur: #00808038;
-  --secondary: #E6E6FA;
+  --secondary: #f6f5f7;
   --terciary: #145DA0;
   --accent: #9c27b0;
 
-  --bg-background: #E6E6FA;
+  --bg-background: #f6f5f7;
 
   --text-primary: #008080;
   --text-secondary: #008080;

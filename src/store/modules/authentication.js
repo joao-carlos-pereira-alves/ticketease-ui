@@ -38,7 +38,16 @@ export const authentication = defineStore("authentication", {
         }
 
         router.push({ name: "Dashboard" });
+
         this.afterLoginCallbacks();
+      } catch (error) {
+        return error?.response || null;
+      }
+    },
+    async signUp(params) {
+      try {
+        const { data } = await axios.post("/sign_up", params);
+        return data;
       } catch (error) {
         return error?.response || null;
       }

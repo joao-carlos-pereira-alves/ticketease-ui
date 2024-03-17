@@ -69,6 +69,7 @@
           fab-mini
           color="black"
           :menu-offset="[5, 5]"
+          disabled
         >
           <q-list>
             <q-item clickable v-close-popup @click="onItemClick">

@@ -40,6 +40,9 @@ myApp.use(Quasar, {
       /* look at QuasarConfOptions from the API card */
     },
   },
+  extras: [
+    'Montserrat'
+  ]
 });
 
 /* Mounting the app to the div with the id of app. */

@@ -78,8 +78,12 @@ _axios.interceptors.response.use(
       case 401:
         useAuthentication.signOut()
         break;
+      case 404:
+        break;
+      case 422:
+        break
       default:
-        return;
+        break;
     }
     return Promise.reject(error);
   }

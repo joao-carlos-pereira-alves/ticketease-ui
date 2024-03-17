@@ -75,8 +75,8 @@
       <q-card-section class="text-h6 text-weight-medium">
         Descrição do Chamado
       </q-card-section>
-      <q-card-section class="q-pt-none">
-        <q-scroll-area style="height: 115px; max-width: 100%">
+      <q-card-section class="q-pt-none" style="height: 115px;">
+        <q-scroll-area style="height: 100%; max-width: 100%">
           <div class="description-card q-pa-sm rounded-borders">
             {{ ticket.description }}
           </div>
@@ -248,5 +248,6 @@ export default {
 
 .description-card {
   background-color: rgba(0, 0, 0, 0.075);
+  min-height: 100px;
 }
 </style>
