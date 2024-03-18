@@ -497,6 +497,11 @@
   "resolved" "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
   "version" "1.1.0"
 
+"quasar-app-extension-q-otp@^0.0.5":
+  "integrity" "sha512-vwJzg1N9TFnEOdRuXNu3aM+9NHrg21e3ooRXuGLrO4Y3574TJ6Wkm7s+O19TSaIo8AP+4R6ucQdcV7QmjqcTuA=="
+  "resolved" "https://registry.npmjs.org/quasar-app-extension-q-otp/-/quasar-app-extension-q-otp-0.0.5.tgz"
+  "version" "0.0.5"
+
 "quasar@^2.0.0", "quasar@^2.7.5":
   "integrity" "sha512-DWI0S+bXASfMSPrB8c/LVsXpA4dF7cBUbaJlcrM+1ioTNBHtiudma2Nhk2SDd5bzk9AYVHh5A8JCZuKqQAXt7g=="
   "resolved" "https://registry.npmjs.org/quasar/-/quasar-2.7.5.tgz"

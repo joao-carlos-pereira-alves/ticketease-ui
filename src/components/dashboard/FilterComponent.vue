@@ -45,7 +45,7 @@
                   class="text-caption"
                   v-model="filter.tags[tag.key]"
                   @update:model-value="fetchFilteredTickets"
-                  :label="tag.label.toUpperCase()"
+                  :label="tag && tag.label && tag.label.toUpperCase()"
                 />
               </q-item-label>
             </q-item-section>

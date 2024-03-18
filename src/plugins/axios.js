@@ -52,12 +52,13 @@ _axios.interceptors.request.use(
   async (config) => {
     const useAuthentication = authentication();
     const _auth = useAuthentication._auth;
+    const currentUser = useAuthentication?.user || null
 
     if (!_auth) {
       useAuthentication.signOut()
       delete config.headers.Authorization;
     }
-    
+
     return config;
   },
   (error) => {
@@ -72,19 +73,22 @@ _axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    const useAuthentication = authentication();
+    // const useAuthentication = authentication();
 
-    switch (error.response.status) {
-      case 401:
-        useAuthentication.signOut()
-        break;
-      case 404:
-        break;
-      case 422:
-        break
-      default:
-        break;
-    }
+    console.error(error)
+
+    // switch (error?.response?.status) {
+    //   case 401:
+    //     useAuthentication.signOut()
+    //     break;
+    //   case 404:
+    //     break;
+    //   case 422:
+    //     break
+    //   default:
+    //     break;
+    // }
+
     return Promise.reject(error);
   }
 );

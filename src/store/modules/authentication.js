@@ -35,9 +35,8 @@ export const authentication = defineStore("authentication", {
           localStorage._auth = this._auth;
 
           this.updateLoadingState(false);
+          this.handleRedirectionView(data);
         }
-
-        router.push({ name: "Dashboard" });
 
         this.afterLoginCallbacks();
       } catch (error) {
@@ -58,6 +57,27 @@ export const authentication = defineStore("authentication", {
       localStorage.removeItem("_auth");
 
       router.push({ name: "Login" });
+    },
+    async verifyAccount(code) {
+      try {
+        const response = await axios.post("/verify_account", {
+          totp_token: String(code)
+        });
+
+        if (response?.data) {
+          const { data } = response?.data
+
+          this.user = data
+          this.handleRedirectionView(data);
+        }
+
+        return;
+    } catch (error) {
+        return error?.response || null;
+      }
+    },
+    handleRedirectionView(user) {
+      router.push({ name: "Dashboard" });
     },
     updateLoadingState(v) {
       this.loading = v;

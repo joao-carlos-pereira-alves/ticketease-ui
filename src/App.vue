@@ -21,7 +21,8 @@ export default {
     Drawer
   },
   beforeCreate() {
-    if (this?.$authentication?._auth) this.$callbacks.call();
+    const { _auth, user } = this?.$authentication || {};
+    if (_auth && user?.verified) this.$callbacks.call();
   },
   computed: {
     hideMenu() {
