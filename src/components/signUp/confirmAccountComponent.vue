@@ -21,35 +21,109 @@
     <q-card-section class="row justify-center q-pt-none">
       <QOtp
         placeholder="-"
-        field-classes="q-ml-xs q-mr-xs q-mt-xs"
+        :field-classes="`q-ml-xs q-mr-xs q-mt-xs ${error && 'error-totp-input'}`"
         input-styles="opacity: 1 !important;"
-        @change="sendVerifyToken"
+        @change="debouncedSendVerifyToken"
         outlined
         :num="6"
         :disable="disableInput"
+        :color="error ? 'red' : 'primary'"
       />
     </q-card-section>
+    <q-card-section>
+      <q-separator></q-separator>
+    </q-card-section>
+    <q-card-actions align="right">
+      <q-btn flat @click="$authentication.signOut()">Voltar</q-btn>
+      <q-btn
+        color="primary"
+        :disabled="loadingResendToken"
+        @click="resendToken"
+      >
+        {{ loadingResendToken ? `Tente novamente em ${secondsLeft}` : "Reenviar token" }}
+      </q-btn>
+    </q-card-actions>
   </q-card>
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref } from "vue";
 import QOtp from "quasar-app-extension-q-otp";
 import ConfirmationEmail from "../../assets/confirmation-email.jpeg";
-import { authentication } from "../../store/modules/authentication.js"
+import { authentication } from "../../store/modules/authentication.js";
 
 const disableInput = ref(false);
 const useAuthentication = authentication();
+const loadingResendToken = ref(false);
+const secondsLeft = ref(30);
+const error = ref(false);
 
-const sendVerifyToken = async (code) => {
+const debounce = (func, delay) => {
+  let timeoutId;
+
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
+
+const debounceDelay = 250;
+
+const debouncedSendVerifyToken = debounce(async (code) => {
+  setError(false);
+
   if (code?.length === 6) {
     setDisableInput(true);
-    await useAuthentication.verifyAccount(code);
-    setDisableInput(true);
-  }
-}
 
-const setDisableInput = (v) => disableInput.value = v;
+    const response = await useAuthentication.verifyAccount(code);
+
+    if (response?.status === 401 && response?.data?.message == "Token inválido") {
+      setError(true)
+    }
+
+    setDisableInput(false);
+  }
+}, debounceDelay);
+
+const setDisableInput = (v) => (disableInput.value = v);
+
+const setError = (v) => error.value = v;
+
+const countdownTimer = (callback) => {
+  const timerId = setInterval(() => {
+    secondsLeft.value = secondsLeft.value - 1;
+
+    if (secondsLeft.value === 0) {
+      clearInterval(timerId);
+      callback();
+    }
+  }, 1000);
+
+  return timerId; // Retorna o ID do temporizador para que você possa pará-lo se necessário
+};
+
+const clearSecondsLeft = () => {
+  loadingResendToken.value = false;
+  secondsLeft.value = 30;
+};
+
+const resendToken = async () => {
+  try {
+    startCounterTime();
+    await useAuthentication.resendVerifyToken();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const startCounterTime = () =>
+  {
+    loadingResendToken.value = true;
+    countdownTimer(() => {
+    clearSecondsLeft();
+  });}
 </script>
 
 <style scoped>

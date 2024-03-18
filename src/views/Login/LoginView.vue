@@ -289,7 +289,6 @@ const onSubmitSignUp = async () => {
 
 const handleSuccessSignUp = () => {
   updateStep(0);
-  successSignUp.value = true;
 }
 
 const pushErrorMessage = (column, error_message, action = "signIn") => {

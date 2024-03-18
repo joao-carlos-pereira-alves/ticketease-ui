@@ -18,7 +18,7 @@ const routes = [
     }
   },
   {
-    path: "/",
+    path: "/confirm_account",
     name: "ConfirmationAccount",
     component: ConfirmAccountView,
     meta: {
@@ -52,8 +52,11 @@ router.beforeResolve((to, _from, next) => {
   else if (!_auth) {
     next({ name: "Login" });
   }
-  else if (_auth && !user?.verified) {
-    next({ name: "ConfirmationAccount" });
+  else if (_auth && user && !user?.verified && to.name !== "ConfirmationAccount") {
+    next({ path: "/confirm_account", name: "ConfirmationAccount" });
+  }
+  else if (user?.verified && to.name == "ConfirmationAccount") {
+    next({ name: "Dashboard" });
   }
   else {
     next();
