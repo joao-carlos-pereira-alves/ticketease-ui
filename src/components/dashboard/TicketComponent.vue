@@ -168,7 +168,7 @@ export default {
       },
       {
         key: "inserted_at_desc",
-        label: "Data Crescente",
+        label: "Data Decrescente",
       },
     ];
 

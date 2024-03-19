@@ -72,7 +72,7 @@ import dashboardIlustration from "../../assets/dashboard-ilustration.jpeg";
 const menuList = [
   {
     icon: "dashboard",
-    label: "Dashboard",
+    label: "Área de Trabalho",
   },
   {
     icon: "analytics",

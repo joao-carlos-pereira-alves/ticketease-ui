@@ -65,6 +65,12 @@
   animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
 }
 
+.success-totp-input {
+  border: 0.5px solid green;
+  border-radius: 5px;
+  animation: shake 1s 1 alternate;
+}
+
 .pointer {
   cursor: pointer !important;
 }
@@ -83,7 +89,7 @@
 }
 
 .default-page {
-  width: min(85vw, 90vh);
+  width: min(65vw, 100vh);
 }
 
 .icon-card {
@@ -182,5 +188,14 @@ button:focus-visible {
 
   40%, 60% {
     transform: translate3d(4px, 0, 0);
+  }
+}
+
+@keyframes itemUpDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-5px);
   }
 }

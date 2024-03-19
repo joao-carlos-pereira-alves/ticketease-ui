@@ -21,7 +21,10 @@
     <q-card-section class="row justify-center q-pt-none">
       <QOtp
         placeholder="-"
-        :field-classes="`q-ml-xs q-mr-xs q-mt-xs ${error && 'error-totp-input'}`"
+        :field-classes="`q-ml-xs q-mr-xs q-mt-xs ${
+          success && 'success-totp-input'
+        } ${error && 'error-totp-input'}`"
+        input-classes=""
         input-styles="opacity: 1 !important;"
         @change="debouncedSendVerifyToken"
         outlined
@@ -38,9 +41,14 @@
       <q-btn
         color="primary"
         :disabled="loadingResendToken"
+        :loading="success"
         @click="resendToken"
       >
-        {{ loadingResendToken ? `Tente novamente em ${secondsLeft}` : "Reenviar token" }}
+        {{
+          loadingResendToken
+            ? `Tente novamente em ${secondsLeft}`
+            : "Reenviar token"
+        }}
       </q-btn>
     </q-card-actions>
   </q-card>
@@ -57,6 +65,7 @@ const useAuthentication = authentication();
 const loadingResendToken = ref(false);
 const secondsLeft = ref(30);
 const error = ref(false);
+const success = ref(false);
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -73,14 +82,22 @@ const debounceDelay = 250;
 
 const debouncedSendVerifyToken = debounce(async (code) => {
   setError(false);
+  setSuccess(false);
 
   if (code?.length === 6) {
     setDisableInput(true);
 
     const response = await useAuthentication.verifyAccount(code);
 
-    if (response?.status === 401 && response?.data?.message == "Token inválido") {
-      setError(true)
+    if (response?.status === 200) {
+      handleSuccess()
+    }
+
+    if (
+      response?.status === 401 &&
+      response?.data?.message == "Token inválido"
+    ) {
+      setError(true);
     }
 
     setDisableInput(false);
@@ -89,7 +106,9 @@ const debouncedSendVerifyToken = debounce(async (code) => {
 
 const setDisableInput = (v) => (disableInput.value = v);
 
-const setError = (v) => error.value = v;
+const setError = (v) => (error.value = v);
+
+const setSuccess = (v) => (success.value = v);
 
 const countdownTimer = (callback) => {
   const timerId = setInterval(() => {
@@ -111,6 +130,7 @@ const clearSecondsLeft = () => {
 
 const resendToken = async () => {
   try {
+    setError(false);
     startCounterTime();
     await useAuthentication.resendVerifyToken();
   } catch (error) {
@@ -118,12 +138,16 @@ const resendToken = async () => {
   }
 };
 
-const startCounterTime = () =>
-  {
-    loadingResendToken.value = true;
-    countdownTimer(() => {
+const startCounterTime = () => {
+  loadingResendToken.value = true;
+  countdownTimer(() => {
     clearSecondsLeft();
-  });}
+  });
+};
+
+const handleSuccess = async () => {
+  setSuccess(true);
+}
 </script>
 
 <style scoped>

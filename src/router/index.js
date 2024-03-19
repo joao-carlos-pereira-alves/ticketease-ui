@@ -4,6 +4,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Login from "../views/Login/LoginView.vue";
 import ConfirmAccountView from "../views/Login/ConfirmAccountView.vue";
 import Dashboard from "../views/Dashboard/DashboardView.vue";
+import CreateWorkspaceView from "../views/Workspace/CreateWorkspaceView.vue";
 import App from "../main.js"
 import { authentication } from "../store/modules/authentication.js";
 
@@ -30,6 +31,14 @@ const routes = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    meta: {
+      skipAuthentication: false,
+    }
+  },
+  {
+    path: "/new_workspace",
+    name: "CreateWorkspace",
+    component: CreateWorkspaceView,
     meta: {
       skipAuthentication: false,
     }

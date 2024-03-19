@@ -201,6 +201,8 @@ const updateStep = (value) => {
   step.value = value;
 };
 
+const setSignInLoading = (v) => signInLoading.value = v;
+
 const onReset = () => {
   clearErrorMessages();
   clearLoginForm();

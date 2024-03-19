@@ -2,8 +2,10 @@
   <q-header elevated>
     <div class="q-pa-md q-gutter-y-sm bg-white">
       <q-toolbar class="text-primary">
-        <div class="row items-center text-left">
-          <div class="col-12 text-weight-bold q-mb-xs" v-if="!$q.screen.xs">Área de Trabalho Atual</div>
+        <div class="row items-center text-left" v-if="$workspace?.currentWorkspace">
+          <div class="col-12 text-weight-bold q-mb-xs" v-if="!$q.screen.xs">
+            Área de Trabalho Atual
+          </div>
           <div class="col-12">
             <q-btn-dropdown
               color="black"
@@ -61,7 +63,7 @@
           </div>
         </div>
         <q-space></q-space>
-        <q-btn-dropdown
+        <!-- <q-btn-dropdown
           dense
           rounded
           flat
@@ -78,11 +80,15 @@
               </q-item-section>
             </q-item>
           </q-list>
-        </q-btn-dropdown>
+        </q-btn-dropdown> -->
         <q-btn-dropdown
           flat
           text-color="black"
-          :label="$q.screen.xs ? $authentication?.user?.name.charAt(0) : $authentication?.user?.name || 'Indefinido'"
+          :label="
+            $q.screen.xs
+              ? $authentication?.user?.name.charAt(0)
+              : $authentication?.user?.name || 'Indefinido'
+          "
           :loading="$authentication.loading"
           :menu-offset="[5, 5]"
         >

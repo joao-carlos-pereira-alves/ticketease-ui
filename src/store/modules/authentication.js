@@ -34,8 +34,6 @@ export const authentication = defineStore("authentication", {
           this.updateLoadingState(false);
           this.handleRedirectionView(data, "Dashboard");
         }
-
-        this.afterLoginCallbacks();
       } catch (error) {
         return error?.response || null;
       }
@@ -68,10 +66,11 @@ export const authentication = defineStore("authentication", {
 
         if (response?.data) {
           const { data } = response?.data;
-
           this.user = data;
-          this.handleRedirectionView(data);
-          this.afterLoginCallbacks();
+
+          setTimeout(() => {
+            this.handleRedirectionView(data);
+          }, 1000)
         }
 
         return response;
@@ -91,17 +90,19 @@ export const authentication = defineStore("authentication", {
       this._auth = token;
       localStorage._auth = this._auth;
     },
-    handleRedirectionView(currentUser, router_name, is_sign_up = false) {
+    async handleRedirectionView(currentUser, router_name, is_sign_up = false) {
       const currentRouterName = router?.currentRoute?.value?.name || null;
 
       if (currentUser?.verified && currentRouterName == "ConfirmationAccount") {
-        router.push({ name: "Dashboard" });
+        await this.afterLoginCallbacks();
+        await router.push({ name: "Dashboard" });
       } else if (is_sign_up) {
-        router.push({ name: "ConfirmationAccount" });
+        await router.push({ name: "ConfirmationAccount" });
       } else if (!currentUser?.verified && currentRouterName != "Login") {
-        router.push({ name: "ConfirmationAccount" });
+        await router.push({ name: "ConfirmationAccount" });
       } else if (router_name) {
-        router.push({ name: router_name });
+        await this.afterLoginCallbacks();
+        await router.push({ name: router_name });
       }
     },
     updateLoadingState(v) {
