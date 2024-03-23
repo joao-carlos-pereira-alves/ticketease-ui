@@ -13,18 +13,13 @@ export const callback = defineStore("callback", {
   actions: {
     async call() {
       try {
-        const useAuthentication = authentication();
         const { checkAndFetchUser } = authentication();
         const { getWorkspaceUsers } = workspaceUser();
         // const { getTickets } = ticket();
 
         await checkAndFetchUser;
+        await getWorkspaceUsers();
 
-        const currentUser = useAuthentication.user;
-
-        if (currentUser?.verified) {
-          await getWorkspaceUsers();
-        }
         // await getTickets();
       } catch (error) {
         console.error("Erro ao executar ação call:", error);

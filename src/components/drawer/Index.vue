@@ -21,13 +21,14 @@
           <q-list>
             <template v-for="(menuItem, index) in menuList" :key="index">
               <q-item
-                :class="{ active: menuItem.label === $route.name }"
+                :class="{ active: menuItem.pathName === $route.name }"
                 clickable
-                :active="menuItem.label === $route.name"
+                :active="menuItem.pathName === $route.name"
                 v-ripple
                 class="q-mt-sm"
                 style="border-radius: 10px"
                 :disabled="menuItem.disabled"
+                @click="$router.push({ name: menuItem.pathName })"
               >
                 <q-item-section avatar>
                   <q-icon :name="menuItem.icon" />
@@ -72,18 +73,24 @@ import dashboardIlustration from "../../assets/dashboard-ilustration.jpeg";
 const menuList = [
   {
     icon: "dashboard",
-    label: "Área de Trabalho",
+    label: "Dashboard",
+    pathName: "Dashboard"
   },
   {
-    icon: "analytics",
-    label: "Gráficos",
-    disabled: true,
+    icon: "public",
+    label: "Áreas de Trabalho",
+    pathName: "Workspace"
   },
-  {
-    icon: "settings",
-    label: "Preferências",
-    disabled: true,
-  },
+  // {
+  //   icon: "analytics",
+  //   label: "Gráficos",
+  //   disabled: true,
+  // },
+  // {
+  //   icon: "settings",
+  //   label: "Preferências",
+  //   disabled: true,
+  // },
 ];
 
 export default {
