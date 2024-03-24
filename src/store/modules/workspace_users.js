@@ -18,6 +18,11 @@ export const workspaceUser = defineStore("workspaceUser", {
       this.setLoading(false);
       this.setCurrentWorkspace();
     },
+    async updateWorkspaceUsers() {
+      this.setLoading(true);
+      this.workspaceUsers = await requestWorkspaceUsers();
+      this.setLoading(false)
+    },
     setLoading(v) {
       this.loading = v;
     },

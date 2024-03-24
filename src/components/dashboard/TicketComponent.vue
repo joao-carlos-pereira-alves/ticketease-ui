@@ -127,7 +127,7 @@
         </q-card-section>
       </q-card>
     </div>
-    <div class="col-12 row justify-center q-mt-md" v-if="$ticket.offset">
+    <div class="col-12 row justify-center q-mt-md" v-if="$ticket?.tickets?.length && $ticket?.offset">
       <q-pagination
         v-model="$ticket.pagination.page"
         :max="$ticket.offset"

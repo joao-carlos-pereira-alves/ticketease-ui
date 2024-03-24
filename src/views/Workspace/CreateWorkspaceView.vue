@@ -50,10 +50,6 @@
 </template>
 
 <script>
-// Falta não deixar criar dois workspace para o mesmo e-mail, 
-// tratar os erros, adicionar validações nos inputs, 
-// adicionar uma mensagem de sucesso, criar um workspaceUser após a criação do workspace, 
-// redirecionar e requisitar dados para setar o currentWorkspace atual
 export default {
   data: () => ({
     loading: false,

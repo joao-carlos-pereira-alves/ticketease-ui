@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 import App from "../../main.js";
 import { getWorkspace as requestWorkspace, createWorkspace as requestCreateWorkspace } from "../../api/workspaces.js";
 import { callback } from "./callbacks.js";
+import { workspaceUser } from "./workspace_users.js";
 
 export const workspace = defineStore("workspace", {
   state: () => ({
@@ -15,6 +16,7 @@ export const workspace = defineStore("workspace", {
     async createWorkspace(params) {
       try {
         await requestCreateWorkspace(params);
+        await this.afterCreateWorkspace();
       } catch (error) {
         return error?.response
       }
@@ -37,6 +39,10 @@ export const workspace = defineStore("workspace", {
       const currentWorkspaceId = this.currentWorkspace.id
 
       await onChangeWorkspace(currentWorkspaceId);
+    },
+    async afterCreateWorkspace() {
+      const { updateWorkspaceUsers } = workspaceUser();
+      await updateWorkspaceUsers();
     }
   },
 });

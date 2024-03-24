@@ -17,9 +17,9 @@ export const getTickets = async (filter_params = null, pagination_params) => {
     const ticketsData  = responseData?.data || [];
     const pagination   = responseData?.pagination || {}
 
-    return { tickets: ticketsData, pagination: pagination } || null;
+    return { tickets: ticketsData, pagination: pagination, status: 200 } || null;
   } catch (error) {
-    return error;
+    return error.response;
   }
 }
 

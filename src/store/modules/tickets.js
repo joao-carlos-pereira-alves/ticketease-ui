@@ -33,27 +33,33 @@ export const ticket = defineStore("ticket", {
         ...this.filterParams,
         workspace_id: currentWorkspaceId,
       };
-      const { tickets, pagination } = await requestTickets(
-        filterParams,
-        paginationParams
-      );
-      const { total, per_page, page } = pagination;
-      const offset = total === 0 ? 1 : Math.ceil(total / per_page);
+      const response = await requestTickets(filterParams, paginationParams);
 
-      this.tickets = tickets;
-      this.pagination = {
-        total: total || 0,
-        per_page: per_page || 5,
-        page: Number(page && page <= 0 ? 1 : page) || 1,
-      };
+      if (response?.status == 200) {
+        const { tickets, pagination } = response;
+        const { total, per_page, page } = pagination;
+        const offset = total === 0 ? 1 : Math.ceil(total / per_page);
 
-      this.setOffSet(offset);
-      this.setLoading(false);
+        this.setTickets(tickets);
+        this.pagination = {
+          total: total || 0,
+          per_page: per_page || 5,
+          page: Number(page && page <= 0 ? 1 : page) || 1,
+        };
+
+        this.setOffSet(offset);
+        this.setLoading(false);
+      } else if (response?.status == 404) {
+        this.setTickets([]);
+      }
     },
     async putTicket(params) {
       const { ticket } = await updateTicket(params);
 
       this.findAndChangeTicket(ticket);
+    },
+    setTickets(tickets) {
+      this.tickets = tickets;
     },
     findAndChangeTicket(params) {
       const currentTicketIndex = this.tickets.findIndex(
