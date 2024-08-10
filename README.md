@@ -27,13 +27,13 @@
 Clone o repositório:
 
 ```
-git clone <link-do-repo-frontend>
+git clone https://github.com/joao-carlos-pereira-alves/ticketease-ui
 ```
 
 Entre no diretório:
 
 ```
-cd ticketease-frontend
+cd ticketease-ui
 ```
 
 Instale as dependências:
