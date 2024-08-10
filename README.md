@@ -29,7 +29,7 @@
 Clone o repositório:
 
 ```
-  git clone <link-do-repo-frontend>
+git clone <link-do-repo-frontend>
 ```
 
 Entre no diretório:
