@@ -24,8 +24,6 @@
 
 ## 🧑‍💻 Como Executar
 
-### Backend
-
 Clone o repositório:
 
 ```
