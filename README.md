@@ -7,8 +7,8 @@
 - **📑 Gestão de Chamados:** Crie, edite e acompanhe chamados em tempo real.
 - **⏰ Notificações de Vencimento:** Receba alertas automáticos via email antes que um chamado vença.
 - **⚡ Priorização Inteligente:** Classifique os chamados com base em prioridade, garantindo que os mais críticos sejam tratados primeiro.
-- **📊 Gráficos e Relatórios:** Visualize o desempenho da sua equipe e o volume de chamados com gráficos detalhados.
-- **📚 Histórico Completo:** Acompanhe todas as ações e interações com cada chamado.
+- **📊 Gráficos e Relatórios:** Visualize o desempenho da sua equipe e o volume de chamados com gráficos detalhados. ( Em construção )
+- **📚 Histórico Completo:** Acompanhe todas as ações e interações com cada chamado. ( Em construção )
 
 ## 🛠️ Tecnologias Utilizadas
 
